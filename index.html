@@ -261,41 +261,29 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   doc.setFillColor(...C.sand);
   doc.triangle(14,0, 82,0, 14,30, 'F');
 
-  // ── Header: full-width teal band with formial branding integrated ──
-  // Deep teal full-width band
+  // ── Header: full-width teal band, centered branding ──
+  const BAND_H = 36;
   doc.setFillColor(...C.teal);
-  doc.rect(0, 0, W, 22, 'F');
+  doc.rect(0, 0, W, BAND_H, 'F');
 
-  // Sand accent strip — diagonal slice effect
+  // Sand corner accents
   doc.setFillColor(232, 220, 200);
-  doc.triangle(0, 22, 68, 0, 0, 0, 'F');
+  doc.triangle(0, BAND_H, 28, 0, 0, 0, 'F');
+  doc.triangle(W, BAND_H, W - 28, 0, W, 0, 'F');
 
-  // "formial" — large, elegant, left-aligned in band, white
+  // "formial" centered, large italic serif, white
   doc.setFont('times', 'italic');
-  doc.setFontSize(22);
+  doc.setFontSize(30);
   doc.setTextColor(255, 255, 255);
-  doc.text('formial', 18, 15);
+  doc.text('formial', W / 2, BAND_H / 2 + 4, { align: 'center' });
 
-  // "LABS" — small spaced caps, sand colour, right after wordmark
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(6);
-  doc.setTextColor(232, 220, 200);
-  // measure formial width to position LABS
-  const fWidth = doc.getTextWidth('formial') * (22/doc.getFontSize ? 1 : 1);
-  doc.setFont('times', 'italic');
-  doc.setFontSize(22);
-  const formialW = doc.getTextWidth('formial');
+  // "LABS" — small spaced caps, centered, sand, below wordmark
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.5);
-  doc.setCharSpace(2.5);
+  doc.setCharSpace(4);
   doc.setTextColor(232, 220, 200);
-  doc.text('LABS', 18 + formialW + 2, 15);
+  doc.text('LABS', W / 2, BAND_H / 2 + 10, { align: 'center' });
   doc.setCharSpace(0);
-
-  // Thin sand underline under the whole wordmark
-  doc.setDrawColor(232, 220, 200);
-  doc.setLineWidth(0.3);
-  doc.line(18, 17.5, 18 + formialW + 18, 17.5);
 
 
   // ── doctor block — smaller ──
