@@ -5,216 +5,137 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Formial Labs — Prescription Generator</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-  :root {
-    --teal-dark: #1a4a42;
-    --teal-mid:  #2d7a6f;
-    --teal-light:#4aab9c;
-    --sand:      #e8dcc8;
-    --sand-light:#f5f0e8;
-    --cream:     #fdfaf5;
-    --ink:       #1c2220;
-    --muted:     #6b7c78;
-    --white:     #ffffff;
-    --radius:    12px;
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 20px 60px;
-  }
-
-  .container { width: 100%; max-width: 780px; }
-
-  .header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 36px;
-  }
-  .header-logo {
-    background: var(--teal-dark);
-    color: var(--white);
-    font-family: 'DM Serif Display', serif;
-    font-size: 18px;
-    letter-spacing: 2px;
-    padding: 10px 18px;
-    border-radius: 8px;
-  }
-  .header-logo span { color: var(--teal-light); }
-  .header-text h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: var(--teal-dark);
-    font-weight: 400;
-  }
-  .header-text p { font-size: 13px; color: var(--muted); margin-top: 2px; }
-
-  .card {
-    background: var(--white);
-    border-radius: var(--radius);
-    border: 1px solid rgba(0,0,0,0.07);
-    box-shadow: 0 2px 20px rgba(26,74,66,0.06);
-    padding: 36px 40px;
-    margin-bottom: 20px;
-  }
-  .card-title {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--teal-mid);
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--sand);
-  }
-
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group.full { grid-column: 1 / -1; }
-
-  label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  input, select, textarea {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    background: var(--sand-light);
-    border: 1.5px solid transparent;
-    border-radius: 8px;
-    padding: 10px 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    width: 100%;
-  }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--teal-light);
-    box-shadow: 0 0 0 3px rgba(74,171,156,0.15);
-    background: var(--white);
-  }
-  textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-
-  #medicine-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
-  .med-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
-  .med-row input { margin: 0; }
-  .btn-remove-med {
-    background: none;
-    border: 1.5px solid #ddd;
-    border-radius: 6px;
-    color: #999;
-    width: 34px; height: 34px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-  }
-  .btn-remove-med:hover { border-color: #e05; color: #e05; }
-  .btn-add-med {
-    background: none;
-    border: 1.5px dashed var(--teal-light);
-    border-radius: 8px;
-    color: var(--teal-mid);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 100%;
-  }
-  .btn-add-med:hover { background: rgba(74,171,156,0.08); }
-
-  .btn-generate {
-    width: 100%;
-    padding: 16px;
-    background: var(--teal-dark);
-    color: var(--white);
-    border: none;
-    border-radius: var(--radius);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 8px;
-  }
-  .btn-generate:hover { background: var(--teal-mid); }
-  .btn-generate:active { transform: scale(0.99); }
-  .btn-generate:disabled { background: #aaa; cursor: not-allowed; }
-
-  #toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--teal-dark);
-    color: var(--white);
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: transform 0.3s ease;
-    z-index: 999;
-    pointer-events: none;
-  }
-  #toast.show { transform: translateX(-50%) translateY(0); }
-  #toast.error { background: #c0392b; }
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root {
+  --teal:  #1a4a42;
+  --teal2: #2d7a6f;
+  --teal3: #4aab9c;
+  --sand:  #e8dcc8;
+  --sand2: #f5f0e8;
+  --cream: #fdfaf5;
+  --ink:   #1c2220;
+  --muted: #6b7c78;
+  --r:     12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 36px 16px 60px;
+}
+.wrap { width: 100%; max-width: 740px; }
+.hdr { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.hdr-logo {
+  background: var(--teal); color: #fff;
+  font-family: 'DM Serif Display', serif;
+  font-size: 17px; letter-spacing: 2px;
+  padding: 9px 16px; border-radius: 8px;
+}
+.hdr-logo span { color: var(--teal3); }
+.hdr h1 { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--teal); font-weight: 400; }
+.hdr p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.card {
+  background: #fff; border-radius: var(--r);
+  border: 1px solid rgba(0,0,0,0.07);
+  box-shadow: 0 2px 18px rgba(26,74,66,0.06);
+  padding: 28px 32px; margin-bottom: 16px;
+}
+.card-title {
+  font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--teal2);
+  margin-bottom: 20px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--sand);
+}
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
+.fg { display: flex; flex-direction: column; gap: 5px; }
+label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--ink);
+  background: var(--sand2); border: 1.5px solid transparent;
+  border-radius: 8px; padding: 9px 12px; outline: none;
+  transition: border-color .2s, box-shadow .2s; width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--teal3);
+  box-shadow: 0 0 0 3px rgba(74,171,156,.15);
+  background: #fff;
+}
+textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+#med-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.med-row { display: grid; grid-template-columns: 1fr 36px; gap: 8px; align-items: center; }
+.med-row input { margin: 0; }
+.btn-rm {
+  background: none; border: 1.5px solid #ddd; border-radius: 6px;
+  color: #aaa; width: 36px; height: 36px; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center; transition: all .2s;
+}
+.btn-rm:hover { border-color: #d00; color: #d00; }
+.btn-add {
+  background: none; border: 1.5px dashed var(--teal3); border-radius: 8px;
+  color: var(--teal2); font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 500; padding: 7px 12px; cursor: pointer; transition: all .2s; width: 100%;
+}
+.btn-add:hover { background: rgba(74,171,156,.08); }
+.btn-gen {
+  width: 100%; padding: 15px; background: var(--teal); color: #fff;
+  border: none; border-radius: var(--r);
+  font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: background .2s, opacity .2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 6px;
+}
+.btn-gen:hover { background: var(--teal2); }
+.btn-gen:disabled { opacity: .5; cursor: not-allowed; }
+#status { text-align: center; font-size: 13px; margin-top: 10px; color: var(--teal2); min-height: 18px; }
+#status.err { color: #c0392b; }
+.hint { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="container">
-
-  <div class="header">
-    <div class="header-logo">form<span>ial</span></div>
-    <div class="header-text">
+  <div class="hdr">
+    <div class="hdr-logo">form<span>ial</span></div>
+    <div>
       <h1>Prescription Generator</h1>
-      <p>Dr. Neha Fogla · MBBS MD (Derm) · MMC Reg. 2021054683</p>
+      <p>Dr. Neha Fogla · MBBS MD (DVL) · MMC Reg. 2021054683</p>
     </div>
   </div>
 
-  <!-- Patient Details -->
+  <!-- Sheet URL -->
+  <div class="card">
+    <div class="card-title">Google Sheets — One-time Setup</div>
+    <div class="fg">
+      <label>Apps Script Web App URL</label>
+      <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/…/exec" />
+      <div class="hint">Paste your Web App URL once — it gets saved in your browser automatically.</div>
+    </div>
+  </div>
+
+  <!-- Patient -->
   <div class="card">
     <div class="card-title">Patient Details</div>
-    <div class="form-grid">
-      <div class="form-group">
+    <div class="grid2">
+      <div class="fg">
         <label>Patient Name</label>
-        <input type="text" id="patientName" placeholder="e.g. Prachi Redkar" />
+        <input type="text" id="patName" placeholder="e.g. Prachi Redkar" />
       </div>
-      <div class="form-group">
+      <div class="fg">
         <label>Gender</label>
         <select id="gender">
           <option value="">Select</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
+          <option>Male</option><option>Female</option><option>Other</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="fg">
         <label>Age</label>
         <input type="text" id="age" placeholder="e.g. 26" />
       </div>
-      <div class="form-group">
-        <label>Date of Prescription</label>
+      <div class="fg">
+        <label>Date</label>
         <input type="date" id="rxDate" />
       </div>
     </div>
@@ -222,448 +143,223 @@
 
   <!-- Medicines -->
   <div class="card">
-    <div class="card-title">Prescription / Medicines</div>
-    <div id="medicine-rows">
+    <div class="card-title">Medicines / Instructions</div>
+    <div id="med-rows">
       <div class="med-row">
         <input type="text" placeholder="e.g. Cap Sotret 10 mg once daily after lunch for 4 weeks" />
-        <button class="btn-remove-med" onclick="removeMed(this)">×</button>
+        <button class="btn-rm" onclick="rmMed(this)">×</button>
       </div>
     </div>
-    <button class="btn-add-med" onclick="addMed()">+ Add medicine / instruction</button>
+    <button class="btn-add" onclick="addMed()">+ Add line</button>
   </div>
 
   <!-- Notes -->
   <div class="card">
     <div class="card-title">Additional Notes <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></div>
-    <div class="form-group">
+    <div class="fg">
       <textarea id="notes" placeholder="Follow-up in 4 weeks, avoid sun exposure, etc."></textarea>
     </div>
   </div>
 
-  <button class="btn-generate" id="generateBtn" onclick="handleGenerate()">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-    Generate &amp; Download Prescription PDF
+  <button class="btn-gen" id="genBtn" onclick="generate()">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="12" y1="18" x2="12" y2="12"/>
+      <line x1="9" y1="15" x2="15" y2="15"/>
+    </svg>
+    Generate &amp; Download PDF
   </button>
+  <div id="status"></div>
 
 </div>
 
-<div id="toast"></div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// ─────────────────────────────────────────────
-// CONFIG — paste your Apps Script Web App URL here
-// ─────────────────────────────────────────────
-const SHEET_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
-
-// ─────────────────────────────────────────────
-// CONSTANTS
-// ─────────────────────────────────────────────
-const DR = {
-  name:    'Dr. Neha Fogla',
-  degree:  'MBBS, MD (DVL)',
-  regNo:   '2021054683',
-  address: '1st Floor, 181, Kbar Road, Austin Town, Bangalore – 560047',
-  phone:   '+91 87928 08844',
-  email:   'care@formial.in',
-};
-
-// ─────────────────────────────────────────────
-// UI helpers
-// ─────────────────────────────────────────────
-document.getElementById('rxDate').valueAsDate = new Date();
+// restore saved URL
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('formial_rx_sheet');
+  if (saved) document.getElementById('sheetUrl').value = saved;
+  document.getElementById('rxDate').valueAsDate = new Date();
+});
+document.getElementById('sheetUrl').addEventListener('input', () => {
+  const v = document.getElementById('sheetUrl').value.trim();
+  if (v) localStorage.setItem('formial_rx_sheet', v);
+});
 
 function addMed() {
-  const row = document.createElement('div');
-  row.className = 'med-row';
-  row.innerHTML = `<input type="text" placeholder="Medicine / instruction line" /><button class="btn-remove-med" onclick="removeMed(this)">×</button>`;
-  document.getElementById('medicine-rows').appendChild(row);
+  const d = document.createElement('div');
+  d.className = 'med-row';
+  d.innerHTML = `<input type="text" placeholder="Medicine / instruction" /><button class="btn-rm" onclick="rmMed(this)">×</button>`;
+  document.getElementById('med-rows').appendChild(d);
 }
-function removeMed(btn) {
+function rmMed(btn) {
   const rows = document.querySelectorAll('.med-row');
   if (rows.length === 1) { btn.closest('.med-row').querySelector('input').value = ''; return; }
   btn.closest('.med-row').remove();
 }
-
-function showToast(msg, isError) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'show' + (isError ? ' error' : '');
-  setTimeout(() => t.className = '', 3000);
+function setStatus(msg, err) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = err ? 'err' : '';
 }
 
-// ─────────────────────────────────────────────
-// MAIN
-// ─────────────────────────────────────────────
-async function handleGenerate() {
-  const name    = document.getElementById('patientName').value.trim();
-  const age     = document.getElementById('age').value.trim();
-  const gender  = document.getElementById('gender').value;
-  const dateVal = document.getElementById('rxDate').value;
-  const notes   = document.getElementById('notes').value.trim();
-  const meds    = [...document.querySelectorAll('#medicine-rows .med-row input')]
-                    .map(i => i.value.trim()).filter(Boolean);
+async function generate() {
+  const name     = document.getElementById('patName').value.trim();
+  const age      = document.getElementById('age').value.trim();
+  const gender   = document.getElementById('gender').value;
+  const dateVal  = document.getElementById('rxDate').value;
+  const notes    = document.getElementById('notes').value.trim();
+  const sheetUrl = document.getElementById('sheetUrl').value.trim();
+  const meds     = [...document.querySelectorAll('#med-rows .med-row input')]
+                     .map(i => i.value.trim()).filter(Boolean);
 
-  if (!name)            { showToast('Please enter patient name.', true); return; }
-  if (!dateVal)         { showToast('Please select a date.', true); return; }
-  if (!meds.length)     { showToast('Please enter at least one medicine.', true); return; }
+  if (!name)        { setStatus('Please enter patient name.', true); return; }
+  if (!dateVal)     { setStatus('Please select a date.', true); return; }
+  if (!meds.length) { setStatus('Please add at least one medicine.', true); return; }
 
-  const [y, m, d]  = dateVal.split('-');
-  const displayDate = `${d}-${m}-${y}`;
+  const [y,m,d]  = dateVal.split('-');
+  const dispDate = `${d}-${m}-${y}`;
 
-  const btn = document.getElementById('generateBtn');
+  const btn = document.getElementById('genBtn');
   btn.disabled = true;
-  btn.textContent = 'Generating…';
+  setStatus('Generating…');
 
   try {
-    // 1. Generate PDF
-    generatePDF({ name, age, gender, displayDate, meds, notes });
-
-    // 2. Log to Sheet (fire and forget — don't block on it)
-    logToSheet({ name, age, gender, date: displayDate, meds, notes });
-
-    showToast('✓ Prescription downloaded!');
+    buildPDF({ name, age, gender, dispDate, meds, notes });
+    logSheet({ name, age, gender, date: dispDate, meds, notes, sheetUrl });
+    setStatus('✓ PDF downloaded!' + (sheetUrl ? '  Logged to sheet.' : ''));
   } catch(e) {
-    showToast('Error generating PDF. Try again.', true);
+    setStatus('Error: ' + e.message, true);
     console.error(e);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg> Generate &amp; Download Prescription PDF`;
   }
+  btn.disabled = false;
 }
 
-// ─────────────────────────────────────────────
-// SHEET LOGGER
-// ─────────────────────────────────────────────
-function logToSheet({ name, age, gender, date, meds, notes }) {
-  if (!SHEET_URL || SHEET_URL === 'PASTE_YOUR_WEB_APP_URL_HERE') return;
-  const params = new URLSearchParams({
-    name, age, gender, date,
-    medicines: meds.join(' | '),
-    notes
+function logSheet({ name, age, gender, date, meds, notes, sheetUrl }) {
+  if (!sheetUrl || !sheetUrl.startsWith('http')) return;
+  const p = new URLSearchParams({ name, age, gender, date, medicines: meds.join(' | '), notes });
+  const s = document.createElement('script');
+  s.src = sheetUrl + '?' + p.toString();
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 6000);
+}
+
+function buildPDF({ name, age, gender, dispDate, meds, notes }) {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const W = 210, H = 297, ML = 18, MR = 18, CW = W - ML - MR;
+
+  const C = {
+    teal:  [26,74,66], teal3: [74,171,156],
+    sand:  [232,220,200], sand2: [245,240,232],
+    ink:   [28,34,32], muted: [107,124,120],
+  };
+
+  // top triangles
+  doc.setFillColor(...C.teal);
+  doc.triangle(0,0, 72,0, 0,36, 'F');
+  doc.setFillColor(...C.sand);
+  doc.triangle(14,0, 82,0, 14,30, 'F');
+
+  // brand box
+  doc.setFillColor(...C.sand2);
+  doc.roundedRect(W-52, 6, 46, 24, 3, 3, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...C.teal);
+  doc.text('formial', W-29, 17, {align:'center'});
+  doc.setFontSize(6); doc.setTextColor(...C.teal3);
+  doc.text('LABS', W-29, 23, {align:'center'});
+
+  // doctor
+  let cy = 44;
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...C.teal);
+  doc.text('DR. NEHA FOGLA', ML, cy);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...C.muted);
+  cy+=6; doc.text('MBBS, MD (DVL)', ML, cy);
+  cy+=5; doc.text('MMC Reg. No. 2021054683', ML, cy);
+  cy+=5;
+  doc.setDrawColor(...C.teal3); doc.setLineWidth(0.4);
+  doc.line(ML, cy, W-MR, cy);
+
+  // Rx + date
+  cy+=10;
+  doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...C.teal);
+  doc.text('Rx', ML, cy);
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(...C.muted);
+  doc.text('Date', W-MR-28, cy-3);
+  doc.setFont('helvetica','bold'); doc.setFontSize(9.5); doc.setTextColor(...C.ink);
+  doc.text(dispDate, W-MR, cy-3, {align:'right'});
+
+  // patient
+  cy+=8;
+  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(...C.muted);
+  doc.text('Patient', ML+12, cy);
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...C.ink);
+  doc.text(name, ML+34, cy);
+  const ageLine = [age&&`Age: ${age}`, gender&&`Gender: ${gender}`].filter(Boolean).join('   ·   ');
+  if (ageLine) {
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...C.muted);
+    doc.text(ageLine, ML+34, cy+5.5);
+  }
+
+  // divider
+  cy+=14;
+  doc.setDrawColor(...C.sand); doc.setLineWidth(0.3);
+  doc.line(ML, cy, W-MR, cy);
+
+  // medicines
+  cy+=10;
+  meds.forEach((med,i) => {
+    doc.setFillColor(...C.teal3);
+    doc.circle(ML+2, cy-1.5, 1.2, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...C.teal);
+    doc.text(`${i+1}.`, ML+6, cy);
+    doc.setFont('helvetica','normal'); doc.setFontSize(10.5); doc.setTextColor(...C.ink);
+    const lines = doc.splitTextToSize(med, CW-18);
+    doc.text(lines, ML+14, cy);
+    cy += lines.length * 6.5 + 5;
   });
-  // script tag method — works on Android/Primebook without CORS issues
-  const script = document.createElement('script');
-  script.src = SHEET_URL + '?' + params.toString();
-  document.body.appendChild(script);
-  setTimeout(() => script.remove(), 5000);
-}
 
-// ─────────────────────────────────────────────
-// PDF GENERATOR (inline, no CDN dependency)
-// ─────────────────────────────────────────────
-function generatePDF({ name, age, gender, displayDate, meds, notes }) {
-  // Build HTML for the prescription and use browser print to PDF
-  const medLines = meds.map((m, i) => `
-    <div class="med-line">
-      <span class="med-bullet"></span>
-      <span class="med-num">${i + 1}.</span>
-      <span class="med-text">${escHtml(m)}</span>
-    </div>`).join('');
-
-  const notesBlock = notes ? `
-    <div class="notes-block">
-      <div class="notes-label">NOTES</div>
-      <div class="notes-text">${escHtml(notes)}</div>
-    </div>` : '';
-
-  const ageParts = [age && `Age: ${age}`, gender && `Gender: ${gender}`].filter(Boolean).join('   ·   ');
-
-  const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Prescription - ${name}</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;600&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', Helvetica, sans-serif;
-    color: #1c2220;
-    background: #fff;
-    width: 210mm;
-    min-height: 297mm;
-    padding: 0;
-  }
-  .page {
-    width: 210mm;
-    min-height: 297mm;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
+  // notes
+  if (notes) {
+    cy+=4;
+    const nl = doc.splitTextToSize(notes, CW-18);
+    const nh = nl.length*5.5+14;
+    doc.setFillColor(...C.sand2);
+    doc.roundedRect(ML, cy, CW, nh, 3,3,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...C.teal);
+    doc.text('NOTES', ML+8, cy+7);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(...C.ink);
+    doc.text(nl, ML+8, cy+13);
+    cy+=nh+6;
   }
 
-  /* ── TOP BAND ── */
-  .top-band {
-    position: relative;
-    height: 52px;
-    background: #fff;
-    flex-shrink: 0;
-  }
-  .top-teal {
-    position: absolute;
-    top: 0; left: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 52px 80px 0 0;
-    border-color: #1a4a42 transparent transparent transparent;
-  }
-  .top-sand {
-    position: absolute;
-    top: 0; left: 16px;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 44px 72px 0 0;
-    border-color: #e8dcc8 transparent transparent transparent;
-  }
-  .brand-box {
-    position: absolute;
-    top: 8px; right: 18px;
-    background: #f5f0e8;
-    border-radius: 4px;
-    padding: 5px 14px 7px;
-    text-align: center;
-  }
-  .brand-name {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 14px;
-    color: #1a4a42;
-    letter-spacing: 1px;
-  }
-  .brand-sub {
-    font-size: 7px;
-    color: #4aab9c;
-    letter-spacing: 3px;
-    font-weight: 600;
-    display: block;
-    margin-top: -1px;
-  }
+  // signature
+  const sy = Math.max(cy+16, H-72);
+  doc.setDrawColor(...C.teal); doc.setLineWidth(0.7);
+  doc.lines([[2,-8],[4,-10],[6,-4]], ML, sy, [1,1],'S');
+  doc.lines([[2,8],[2,10],[-2,6]], ML+6, sy-10, [1,1],'S');
+  doc.lines([[4,-6],[6,-8],[8,0]], ML+6, sy+6, [1,1],'S');
+  doc.lines([[2,6],[0,8],[-4,4]], ML+14, sy-2, [1,1],'S');
+  doc.lines([[4,-4],[6,-2],[4,6]], ML+18, sy+4, [1,1],'S');
+  doc.lines([[4,2],[2,6],[-6,4]], ML+24, sy+4, [1,1],'S');
+  doc.line(ML+2, sy+14, ML+28, sy+14);
 
-  /* ── DOCTOR BLOCK ── */
-  .doctor-block {
-    padding: 10px 18mm 0;
-  }
-  .dr-name {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 20px;
-    color: #1a4a42;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .dr-sub {
-    font-size: 9.5px;
-    color: #6b7c78;
-    margin-top: 2px;
-    line-height: 1.6;
-  }
-  .divider {
-    margin: 8px 18mm 0;
-    border: none;
-    border-top: 0.5px solid #4aab9c;
-  }
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...C.teal);
+  doc.text('Dr. Neha Fogla', ML, sy+22);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...C.muted);
+  doc.text('MBBS, MD (DVL)', ML, sy+28);
 
-  /* ── RX HEADER ── */
-  .rx-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 10px 18mm 0;
-    margin-top: 2px;
-  }
-  .rx-symbol {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 26px;
-    color: #1a4a42;
-    line-height: 1;
-  }
-  .rx-date-block { text-align: right; }
-  .rx-date-label { font-size: 8px; color: #6b7c78; text-transform: uppercase; letter-spacing: 0.5px; }
-  .rx-date-val { font-size: 10px; font-weight: 600; color: #1c2220; }
+  // footer
+  const fy = H-22;
+  doc.setFillColor(...C.sand2); doc.rect(0,fy,W,22,'F');
+  doc.setFillColor(...C.teal); doc.triangle(W-38,H, W,H-26, W,H, 'F');
+  doc.setFillColor(...C.sand); doc.triangle(W-20,H, W,H-14, W,H, 'F');
+  doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(...C.muted);
+  doc.text('REG OFFICE: 1ST FLOOR, 181, KBAR ROAD, AUSTIN TOWN, BANGALORE \u2013 560047', ML, fy+7);
+  doc.text('+91 87928 08844   \u00b7   care@formial.in', ML, fy+14);
 
-  /* ── PATIENT ── */
-  .patient-block {
-    padding: 8px 18mm 0;
-    display: flex;
-    align-items: baseline;
-    gap: 16px;
-  }
-  .patient-label { font-size: 8.5px; color: #6b7c78; text-transform: uppercase; letter-spacing: 0.5px; min-width: 44px; }
-  .patient-name { font-size: 13px; font-weight: 600; color: #1c2220; }
-  .patient-sub { font-size: 9px; color: #6b7c78; margin-left: 60px; margin-top: 2px; padding: 0 18mm; }
-
-  .rx-divider {
-    margin: 10px 18mm 0;
-    border: none;
-    border-top: 0.4px solid #e8dcc8;
-  }
-
-  /* ── MEDICINES ── */
-  .medicines {
-    padding: 14px 18mm 0;
-    flex: 1;
-  }
-  .med-line {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-  .med-bullet {
-    width: 7px; height: 7px;
-    background: #4aab9c;
-    border-radius: 50%;
-    flex-shrink: 0;
-    margin-top: 4px;
-  }
-  .med-num {
-    font-size: 9px;
-    font-weight: 600;
-    color: #1a4a42;
-    min-width: 14px;
-    margin-top: 1px;
-  }
-  .med-text { font-size: 11px; color: #1c2220; line-height: 1.6; }
-
-  /* ── NOTES ── */
-  .notes-block {
-    margin: 10px 18mm 0;
-    background: #f5f0e8;
-    border-radius: 4px;
-    padding: 10px 12px;
-  }
-  .notes-label {
-    font-size: 7.5px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    color: #2d7a6f;
-    margin-bottom: 4px;
-  }
-  .notes-text { font-size: 10px; color: #1c2220; line-height: 1.6; }
-
-  /* ── SIGNATURE ── */
-  .sig-block {
-    padding: 20px 18mm 0;
-  }
-  .sig-svg { display: block; margin-bottom: 4px; }
-  .sig-name { font-size: 11px; font-weight: 600; color: #1a4a42; }
-  .sig-deg  { font-size: 9px; color: #6b7c78; margin-top: 1px; }
-
-  /* ── FOOTER ── */
-  .footer {
-    margin-top: auto;
-    position: relative;
-    background: #f5f0e8;
-    padding: 8px 18mm;
-    min-height: 28px;
-    overflow: hidden;
-  }
-  .footer-text { font-size: 7.5px; color: #6b7c78; line-height: 1.8; }
-  .footer-corner-dark {
-    position: absolute;
-    bottom: 0; right: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 0 36px 48px;
-    border-color: transparent transparent #1a4a42 transparent;
-  }
-  .footer-corner-sand {
-    position: absolute;
-    bottom: 0; right: 0;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 0 20px 26px;
-    border-color: transparent transparent #e8dcc8 transparent;
-  }
-
-  @media print {
-    body { margin: 0; }
-    .page { page-break-after: avoid; }
-  }
-</style>
-</head>
-<body>
-<div class="page">
-
-  <div class="top-band">
-    <div class="top-teal"></div>
-    <div class="top-sand"></div>
-    <div class="brand-box">
-      <div class="brand-name">formial</div>
-      <span class="brand-sub">LABS</span>
-    </div>
-  </div>
-
-  <div class="doctor-block">
-    <div class="dr-name">Dr. Neha Fogla</div>
-    <div class="dr-sub">MBBS, MD (DVL)<br>MMC Reg. No. 2021054683</div>
-  </div>
-  <hr class="divider">
-
-  <div class="rx-header">
-    <div class="rx-symbol">Rx</div>
-    <div class="rx-date-block">
-      <div class="rx-date-label">Date</div>
-      <div class="rx-date-val">${displayDate}</div>
-    </div>
-  </div>
-
-  <div class="patient-block">
-    <span class="patient-label">Patient</span>
-    <span class="patient-name">${escHtml(name)}</span>
-  </div>
-  ${ageParts ? `<div class="patient-sub">${escHtml(ageParts)}</div>` : ''}
-
-  <hr class="rx-divider">
-
-  <div class="medicines">
-    ${medLines}
-  </div>
-
-  ${notesBlock}
-
-  <div class="sig-block">
-    <svg class="sig-svg" width="90" height="36" viewBox="0 0 90 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 18 C6 8, 10 4, 14 10 C18 16, 14 22, 10 20 C6 18, 10 8, 18 6 C24 4, 28 10, 26 16 C24 22, 26 24, 30 20 C34 16, 36 22, 34 26 L10 26" stroke="#1a4a42" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-    </svg>
-    <div class="sig-name">Dr. Neha Fogla</div>
-    <div class="sig-deg">MBBS, MD (DVL)</div>
-  </div>
-
-  <div class="footer">
-    <div class="footer-text">
-      REG OFFICE: 1ST FLOOR, 181, KBAR ROAD, AUSTIN TOWN, BANGALORE – 560047<br>
-      +91 87928 08844 &nbsp;·&nbsp; care@formial.in
-    </div>
-    <div class="footer-corner-dark"></div>
-    <div class="footer-corner-sand"></div>
-  </div>
-
-</div>
-<script>
-  window.onload = function() { window.print(); }
-<\/script>
-</body>
-</html>`;
-
-  const blob = new Blob([html], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const win  = window.open(url, '_blank');
-  if (!win) {
-    // fallback: download as html if popup blocked
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Prescription_${name.replace(/\s+/g,'_')}_${displayDate.replace(/-/g,'')}.html`;
-    a.click();
-  }
-  setTimeout(() => URL.revokeObjectURL(url), 10000);
-}
-
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  doc.save(`Prescription_${name.replace(/\s+/g,'_')}_${dispDate.replace(/-/g,'')}.pdf`);
 }
 </script>
 </body>
