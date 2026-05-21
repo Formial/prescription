@@ -139,7 +139,7 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
     </div>
   </div>
 
-   <div class="card">
+ <div class="card">
     <div class="card-title">Medicines / Instructions</div>
     <div id="med-rows">
       <div class="med-row" data-idx="0">
@@ -158,17 +158,19 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
         <button class="btn-rm" onclick="rmMed(this)">&times;</button>
       </div>
       <div class="med-manual-row" id="manual-0">
+        <input type="text" class="med-manual-input" placeholder="Type medicine / instruction&hellip;" />
+      </div>
     </div>
     <button class="btn-add" onclick="addMed()">+ Add line</button>
   </div>
-
-   <div class="card">
+ 
+  <div class="card">
     <div class="card-title">Additional Notes <span style="font-weight:300;text-transform:none;letter-spacing:0">(optional)</span></div>
     <div class="fg">
       <textarea id="notes" placeholder="Follow-up in 4 weeks, avoid sun exposure, etc."></textarea>
     </div>
   </div>
-
+ 
   <button class="btn-gen" id="genBtn" onclick="generate()">
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -338,7 +340,7 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   }
 
   // ── divider ──
-  cy += 13;
+  cy += 14;
   doc.setDrawColor(...C.sand); doc.setLineWidth(0.3);
   doc.line(ML, cy, W-MR, cy);
 
@@ -352,7 +354,7 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
     doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...C.ink);
     const lines = doc.splitTextToSize(med, CW-18);
     doc.text(lines, ML+14, cy);
-    cy += lines.length * 5.5 + 5;
+    cy += lines.length * 6.5 + 5;
   });
 
   // ── extra space before notes ──
