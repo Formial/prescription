@@ -139,12 +139,26 @@ textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
     </div>
   </div>
 
-  <div class="card">
+   <div class="card">
     <div class="card-title">Medicines / Instructions</div>
     <div id="med-rows">
-      <div class="med-row">
-        <input type="text" placeholder="e.g. Cap Sotret 10 mg once daily after lunch for 4 weeks" />
-        <button class="btn-rm" onclick="rmMed(this)">×</button>
+      <div class="med-row" data-idx="0">
+        <select class="med-select" onchange="handleMedSelect(this)">
+          <option value="">Select medicine&hellip;</option>
+          <option value="Cap Doxycycline (Doxt-SL) 100 mg">Cap Doxycycline (Doxt-SL) 100 mg</option>
+          <option value="Cap Isotretinoin (Sotret) 10 mg">Cap Isotretinoin (Sotret) 10 mg</option>
+          <option value="Cap Isotretinoin (Sotret) 20 mg">Cap Isotretinoin (Sotret) 20 mg</option>
+          <option value="manual">Type manually&hellip;</option>
+        </select>
+        <select class="freq-select">
+          <option value="">Frequency</option>
+          <option value="once daily">Once daily</option>
+          <option value="twice daily">Twice daily</option>
+        </select>
+        <button class="btn-rm" onclick="rmMed(this)">&times;</button>
+      </div>
+      <div class="med-manual-row" id="manual-0">
+        <input type="text" class="med-manual-input" placeholder="Type medicine / instruction&hellip;" />
       </div>
     </div>
     <button class="btn-add" onclick="addMed()">+ Add line</button>
