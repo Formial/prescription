@@ -518,8 +518,7 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   doc.setLineWidth(0.3);
   doc.line(ML, sy, ML + 60, sy);
 
-  // Embed signature image
-  doc.addImage('data:image/png;base64,' + SIG_B64, 'PNG', ML, sy + 3, 48, 16);
+  // Signature image omitted (replace SIG_B64 with real PNG to restore)
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(9.5);
