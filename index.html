@@ -289,7 +289,7 @@ async function generate() {
   btn.disabled = true; setStatus('Generating…');
   try {
     buildPDF({ name, age, gender, dispDate, meds, notes });
-    logSheet({ name, age, gender, date: dispDate, meds, notes, sheetUrl });
+    await logSheet({ name, age, gender, date: dispDate, meds, notes, sheetUrl });
     setStatus('✓ PDF downloaded!' + (sheetUrl ? '  Logged to sheet.' : ''));
   } catch(e) { setStatus('Error: ' + e.message, true); console.error(e); }
   btn.disabled = false;
