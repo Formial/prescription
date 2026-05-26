@@ -295,12 +295,18 @@ async function generate() {
   btn.disabled = false;
 }
 
-function logSheet({ name, age, gender, date, meds, notes, sheetUrl }) {
+async function logSheet({ name, age, gender, date, meds, notes, sheetUrl }) {
   if (!sheetUrl || !sheetUrl.startsWith('http')) return;
-  const p = new URLSearchParams({ name, age, gender, date, medicines: meds.join(' | '), notes });
-  const s = document.createElement('script');
-  s.src = sheetUrl + '?' + p; document.body.appendChild(s);
-  setTimeout(() => s.remove(), 6000);
+  try {
+    await fetch(sheetUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, age, gender, date, medicines: meds.join(' | '), notes })
+    });
+  } catch(e) {
+    console.warn('Sheet log failed:', e);
+  }
 }
 
 function buildPDF({ name, age, gender, dispDate, meds, notes }) {
