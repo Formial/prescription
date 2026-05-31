@@ -326,26 +326,24 @@ async function generate() {
 
 async function logSheet({ name, age, gender, date, meds, notes, sheetUrl }) {
   if (!sheetUrl || !sheetUrl.startsWith('http')) return;
-  const payload = {
-    timestamp: new Date().toISOString(),
-    name, age, gender, date,
+  const payload = JSON.stringify({
+    date,
+    name,
+    age,
+    gender,
     medicines: meds.join(' | '),
     notes: notes || ''
-  };
-  // Try POST first (Apps Script doPost), fall back to GET (doGet with params)
+  });
   try {
+    // text/plain avoids CORS preflight — body still arrives as e.postData.contents
     await fetch(sheetUrl, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'text/plain' },
+      body: payload
     });
   } catch(e) {
-    // Fallback: GET with query params
-    try {
-      const params = new URLSearchParams(payload);
-      await fetch(sheetUrl + '?' + params.toString(), { mode: 'no-cors' });
-    } catch(e2) { console.warn('Sheet log failed:', e2); }
+    console.warn('Sheet log failed:', e);
   }
 }
 
@@ -471,7 +469,7 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   });
 
   // ── NOTES — small, at bottom above signature ──────────────────────────────
-  const sigY = H - 80; // where signature block starts
+  const sigY = H - 95; // where signature block starts
 
   if (notes) {
     // Place notes just above the signature — calculate from bottom up
