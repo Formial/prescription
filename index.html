@@ -20,41 +20,28 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'DM Sans', sans-serif;
-  background: var(--cream);
-  color: var(--ink);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
+  background: var(--cream); color: var(--ink);
+  min-height: 100vh; display: flex; justify-content: center;
   padding: 36px 16px 60px;
 }
 .wrap { width: 100%; max-width: 740px; }
 
-/* HEADER — full green bar with real logo image */
+/* HEADER */
 .hdr {
   background: var(--teal);
   border-radius: 14px;
-  padding: 18px 28px;
+  padding: 16px 28px;
   box-shadow: 0 6px 24px rgba(26,74,66,0.22);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 28px;
 }
-.hdr-logo { display: flex; align-items: center; }
-.hdr-logo img {
-  height: 44px;
-  display: block;
-  }
-.hdr-info {
-  border-left: 1px solid rgba(255,255,255,0.2);
-  padding-left: 24px;
-  text-align: right;
-}
+.hdr-logo img { height: 40px; display: block; }
+.hdr-info { border-left: 1px solid rgba(255,255,255,0.2); padding-left: 22px; }
 .hdr-info h1 {
   font-family: 'DM Serif Display', serif;
-  font-size: 20px; color: #fff; font-weight: 400;
+  font-size: 19px; color: #fff; font-weight: 400;
 }
-.hdr-info p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+.hdr-info p { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 3px; }
 
 /* CARDS */
 .card {
@@ -79,14 +66,10 @@ input, select, textarea {
   transition: border-color .2s, box-shadow .2s; width: 100%;
 }
 input:focus, select:focus, textarea:focus {
-  border-color: var(--teal3);
-  box-shadow: 0 0 0 3px rgba(74,171,156,.15);
-  background: #fff;
+  border-color: var(--teal3); box-shadow: 0 0 0 3px rgba(74,171,156,.15); background: #fff;
 }
 textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
 .hint { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
-
-/* MED ROWS */
 #med-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
 .med-row { display: grid; grid-template-columns: 2fr 1fr 34px; gap: 8px; align-items: start; }
 .med-manual { margin-top: 6px; display: none; }
@@ -104,25 +87,19 @@ textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
 }
 .btn-add:hover { background: rgba(74,171,156,.07); }
 
-/* SETUP CARD */
-.setup-card {
-  border: 1px dashed var(--teal3);
-  background: var(--sand2);
-  box-shadow: none;
-  margin-bottom: 12px;
-}
+/* SETUP COLLAPSIBLE */
+.setup-card { border: 1px dashed var(--teal3); background: var(--sand2); box-shadow: none; }
 .setup-summary {
   cursor: pointer; list-style: none;
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 0; padding-bottom: 0; border-bottom: none;
-  user-select: none;
+  margin-bottom: 0; padding-bottom: 0; border-bottom: none; user-select: none;
 }
 .setup-summary::-webkit-details-marker { display: none; }
-details[open] .setup-summary { border-bottom: 1px solid var(--sand); padding-bottom: 10px; margin-bottom: 0; }
+details[open] .setup-summary { border-bottom: 1px solid var(--sand); padding-bottom: 10px; }
 .setup-arrow { font-size: 10px; color: var(--teal3); transition: transform 0.2s; }
 details[open] .setup-arrow { transform: rotate(180deg); }
 
-/* GENERATE BUTTON */
+/* GENERATE */
 .btn-gen {
   width: 100%; padding: 15px; background: var(--teal); color: #fff;
   border: none; border-radius: var(--r);
@@ -192,7 +169,9 @@ details[open] .setup-arrow { transform: rotate(180deg); }
   </div>
 
   <details class="card setup-card">
-    <summary class="card-title setup-summary">Google Sheets &mdash; One-time Setup <span class="setup-arrow">&#9660;</span></summary>
+    <summary class="card-title setup-summary">
+      Google Sheets &mdash; One-time Setup <span class="setup-arrow">&#9660;</span>
+    </summary>
     <div class="fg" style="margin-top:14px;">
       <label>Apps Script Web App URL</label>
       <input type="url" id="sheetUrl" placeholder="https://script.google.com/macros/s/&hellip;/exec" />
@@ -281,7 +260,7 @@ function getMeds() {
       ? (document.getElementById('man-' + idx)?.querySelector('input').value.trim() || '')
       : sel.value;
     if (!name) return;
-    out.push(freq ? name + ' \u2014 ' + freq : name);
+    out.push(freq ? name + ' — ' + freq : name);
   });
   return out;
 }
@@ -310,13 +289,13 @@ async function generate() {
 
   const btn = document.getElementById('genBtn');
   btn.disabled = true;
-  setStatus('Saving to sheet\u2026');
+  setStatus('Saving to sheet…');
 
   await logSheet({ name, age, gender, date: dispDate, meds, notes, sheetUrl });
 
   try {
     buildPDF({ name, age, gender, dispDate, meds, notes });
-    setStatus('\u2713 PDF downloaded!' + (sheetUrl ? '  Logged to sheet.' : ''));
+    setStatus('✓ PDF downloaded!' + (sheetUrl ? '  Logged to sheet.' : ''));
   } catch(e) {
     setStatus('Error generating PDF: ' + e.message, true);
     console.error(e);
@@ -326,21 +305,17 @@ async function generate() {
 
 async function logSheet({ name, age, gender, date, meds, notes, sheetUrl }) {
   if (!sheetUrl || !sheetUrl.startsWith('http')) return;
-  const payload = JSON.stringify({
-    date,
-    name,
-    age,
-    gender,
+  const payload = {
+    name, age, gender, date,
     medicines: meds.join(' | '),
     notes: notes || ''
-  });
+  };
   try {
-    // text/plain avoids CORS preflight — body still arrives as e.postData.contents
     await fetch(sheetUrl, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: payload
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
   } catch(e) {
     console.warn('Sheet log failed:', e);
@@ -351,94 +326,82 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const W = 210, H = 297, ML = 18, MR = 18, CW = W - ML - MR;
-
   const C = {
-    teal:  [26,  74,  66],
-    teal2: [45,  122, 111],
-    teal3: [74,  171, 156],
-    sand:  [232, 220, 200],
-    sand2: [248, 244, 238],
-    ink:   [28,  34,  32],
-    muted: [107, 124, 120],
-    white: [255, 255, 255],
+    teal:    [26, 74, 66],
+    teal2:   [45, 122, 111],
+    teal3:   [74, 171, 156],
+    sand:    [232, 220, 200],
+    sand2:   [245, 240, 232],
     ltgreen: [243, 249, 247],
+    ink:     [28, 34, 32],
+    muted:   [107, 124, 120],
+    white:   [255, 255, 255],
   };
 
   // ── HEADER ──────────────────────────────────────────────────────────────
   doc.setFillColor(...C.teal);
-  doc.rect(0, 0, W, 50, 'F');
-
-  // Subtle dark accent triangle top-right
+  doc.rect(0, 0, W, 48, 'F');
+  // dark accent triangle top-right
   doc.setFillColor(20, 58, 52);
-  doc.triangle(W, 0, W, 50, W - 55, 0, 'F');
+  doc.triangle(W, 0, W, 48, W - 50, 0, 'F');
 
-  // Logo image — mix-blend won't work in PDF, so we render on the teal bg directly
-  // The logo JPEG has black bg — we place it and use 'NONE' blending; 
-  // instead crop: render only the white parts via luminosity — not possible in jsPDF
-  // Best approach: place logo at left, it will show with its black bg as a contained box
-  // To make it look good: put a slightly lighter teal rect behind it so it feels intentional
-  const logoW = 68, logoH = Math.round(68 * 502/1800);
-  const logoX = ML, logoY = (50 - logoH) / 2;
-
+  // Logo — transparent PNG, white text floats on teal
+  const logoW = 68, logoH = Math.round(68 * 502 / 1800);
+  const logoY = (48 - logoH) / 2;
   try {
-    doc.addImage('data:image/png;base64,' + LOGO_B64, 'PNG', logoX, logoY, logoW, logoH);
+    doc.addImage('data:image/png;base64,' + LOGO_B64, 'PNG', ML, logoY, logoW, logoH);
   } catch(e) {
-    doc.setFont('times','italic'); doc.setFontSize(24); doc.setTextColor(...C.white);
-    doc.text('formial', logoX + 4, logoY + logoH - 4);
+    doc.setFont('times', 'italic'); doc.setFontSize(26); doc.setTextColor(...C.white);
+    doc.text('formial', ML + 2, 28);
   }
 
-  // Doctor info — right side of header
+  // Doctor info right-aligned
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11.5); doc.setTextColor(...C.white);
-  doc.text('Dr. Neha Fogla', W - MR, 20, { align: 'right' });
+  doc.setFontSize(11); doc.setTextColor(...C.white);
+  doc.text('Dr. Neha Fogla', W - MR, 18, { align: 'right' });
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8); doc.setTextColor(200, 230, 226);
-  doc.text('MBBS, MD (DVL)  \u00b7  Dermatologist', W - MR, 27, { align: 'right' });
-  doc.setFontSize(7.5); doc.setTextColor(160, 210, 205);
-  doc.text('MMC Reg. No. 2021054683', W - MR, 34, { align: 'right' });
+  doc.setFontSize(7.5); doc.setTextColor(200, 230, 226);
+  doc.text('MBBS, MD (DVL)  ·  Dermatologist', W - MR, 25, { align: 'right' });
+  doc.setFontSize(7); doc.setTextColor(160, 210, 205);
+  doc.text('MMC Reg. No. 2021054683', W - MR, 32, { align: 'right' });
 
   // ── PATIENT ROW ──────────────────────────────────────────────────────────
   let cy = 58;
 
-  // Rx symbol — left, smaller, not overlapping name
+  // Rx — left, smaller, with separator line after it
   doc.setFont('times', 'bolditalic');
-  doc.setFontSize(28); doc.setTextColor(...C.teal3);
+  doc.setFontSize(26); doc.setTextColor(...C.teal3);
   doc.text('Rx', ML, cy + 8);
 
-  // Thin vertical separator after Rx
   doc.setDrawColor(...C.teal3); doc.setLineWidth(0.4);
-  doc.line(ML + 14, cy - 1, ML + 14, cy + 11);
+  doc.line(ML + 13, cy - 1, ML + 13, cy + 11);
 
-  // Patient name — clearly to the right of the separator
+  // Patient name
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(16); doc.setTextColor(...C.ink);
-  doc.text(name, ML + 19, cy + 5);
+  doc.text(name, ML + 18, cy + 5);
 
-  // Age / gender
-  const ageLine = [age && ('Age ' + age), gender || ''].filter(Boolean).join('   \u00b7   ');
+  const ageLine = [age && ('Age ' + age), gender || ''].filter(Boolean).join('   ·   ');
   if (ageLine) {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8.5); doc.setTextColor(...C.muted);
-    doc.text(ageLine, ML + 19, cy + 12);
+    doc.text(ageLine, ML + 18, cy + 13);
   }
 
-  // Date — right aligned
+  // Date right
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7); doc.setTextColor(...C.muted);
   doc.text('DATE', W - MR, cy + 4, { align: 'right' });
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10); doc.setTextColor(...C.teal);
-  doc.text(dispDate, W - MR, cy + 12, { align: 'right' });
+  doc.text(dispDate, W - MR, cy + 13, { align: 'right' });
 
   cy += 22;
-
-  // Full-width divider
   doc.setDrawColor(...C.teal3); doc.setLineWidth(0.5);
   doc.line(ML, cy, W - MR, cy);
-
   cy += 10;
 
-  // ── PRESCRIBED SECTION ───────────────────────────────────────────────────
+  // ── PRESCRIBED ───────────────────────────────────────────────────────────
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7); doc.setTextColor(...C.teal2);
   doc.setCharSpace(2.5); doc.text('PRESCRIBED', ML, cy); doc.setCharSpace(0);
@@ -452,68 +415,55 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
       doc.setFillColor(...C.ltgreen);
       doc.roundedRect(ML, cy - 4, CW, rowH, 2, 2, 'F');
     }
-
-    // Number badge
     doc.setFillColor(...C.teal);
     doc.roundedRect(ML + 2, cy - 2.5, 8, 8, 1.5, 1.5, 'F');
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5);
-    doc.setTextColor(...C.white);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(...C.white);
     doc.text(String(i + 1), ML + 6, cy + 3, { align: 'center' });
 
-    // Med text
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11); doc.setTextColor(...C.ink);
     doc.text(lines, ML + 14, cy + 4);
-
     cy += rowH + 5;
   });
 
-  // ── NOTES — small, at bottom above signature ──────────────────────────────
-  const sigY = H - 95; // where signature block starts
+  // ── NOTES — small italic, anchored above signature ─────────────────────
+  const sigY = H - 105;
 
   if (notes) {
-    // Place notes just above the signature — calculate from bottom up
     const nl = doc.splitTextToSize(notes, CW - 8);
     const notesH = nl.length * 4.8 + 10;
-    const notesY = sigY - notesH - 10;
+    const notesY = sigY - notesH - 8;
 
-    // Only draw if there's enough space (doesn't overlap prescriptions)
-    if (notesY > cy + 6) {
+    if (notesY > cy + 4) {
+      doc.setDrawColor(...C.sand); doc.setLineWidth(0.3);
+      doc.line(ML, notesY - 3, W - MR, notesY - 3);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(6); doc.setTextColor(...C.muted);
-      doc.setCharSpace(1.5); doc.text('NOTES', ML, notesY); doc.setCharSpace(0);
-
+      doc.setCharSpace(1.5); doc.text('NOTES', ML, notesY + 3); doc.setCharSpace(0);
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(8); doc.setTextColor(...C.muted);
-      doc.text(nl, ML, notesY + 7);
-
-      // Light underline above notes
-      doc.setDrawColor(...C.sand); doc.setLineWidth(0.3);
-      doc.line(ML, notesY - 4, W - MR, notesY - 4);
+      doc.text(nl, ML, notesY + 9);
     }
   }
 
-  // ── SIGNATURE BLOCK ───────────────────────────────────────────────────────
-  // Signature image
-  const sigImgW = 46, sigImgH = Math.round(46 * 224/872);
+  // ── SIGNATURE ─────────────────────────────────────────────────────────────
+  const sigImgW = 46, sigImgH = Math.round(46 * 224 / 872);
   try {
     doc.addImage('data:image/png;base64,' + SIG_B64, 'PNG', ML, sigY, sigImgW, sigImgH);
   } catch(e) {}
 
-  // Name & credentials below sig
-  const credY = sigY + sigImgH + 4;
+  const credY = sigY + sigImgH + 3;
   doc.setDrawColor(...C.sand); doc.setLineWidth(0.25);
   doc.line(ML, credY, ML + 58, credY);
-
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(10); doc.setTextColor(...C.teal);
   doc.text('Dr. Neha Fogla', ML, credY + 7);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(7.5); doc.setTextColor(...C.muted);
-  doc.text('MBBS, MD (DVL)  \u00b7  Dermatologist', ML, credY + 13);
+  doc.text('MBBS, MD (DVL)  ·  Dermatologist', ML, credY + 13);
 
   // Seal
-  const sx = W - MR - 22, scy = sigY + 18;
+  const sx = W - MR - 22, scy = sigY + 16;
   doc.setDrawColor(...C.teal3); doc.setLineWidth(0.6);
   doc.circle(sx, scy, 16);
   doc.setLineWidth(0.25); doc.circle(sx, scy, 14);
@@ -530,13 +480,12 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   const fy = H - 16;
   doc.setFillColor(...C.teal); doc.rect(0, fy, W, 16, 'F');
   doc.setFillColor(20, 58, 52); doc.triangle(0, fy, 30, fy, 0, H, 'F');
-
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.5); doc.setTextColor(175, 210, 205);
-  doc.text('1ST FLOOR, 181, KBAR ROAD, AUSTIN TOWN, BENGALURU \u2013 560047', W/2, fy + 6, { align: 'center' });
+  doc.text('1ST FLOOR, 181, KBAR ROAD, AUSTIN TOWN, BENGALURU – 560047', W/2, fy+6, { align:'center' });
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(7); doc.setTextColor(...C.white);
-  doc.text('+91\u00a087928\u00a008844   \u00b7   care@formial.in', W/2, fy + 12, { align: 'center' });
+  doc.text('+91 87928 08844   ·   care@formial.in', W/2, fy+12, { align:'center' });
 
   doc.save('Rx_' + name.replace(/\s+/g,'_') + '_' + dispDate.replace(/-/g,'') + '.pdf');
 }
