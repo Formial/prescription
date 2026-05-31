@@ -427,7 +427,7 @@ function buildPDF({ name, age, gender, dispDate, meds, notes }) {
   });
 
   // ── NOTES — small italic, anchored above signature ─────────────────────
-  const sigY = H - 105;
+  const sigY = H - 72;
 
   if (notes) {
     const nl = doc.splitTextToSize(notes, CW - 8);
